@@ -1,79 +1,49 @@
-<!DOCTYTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-    <meta charset="utf-8" name="viewport" content="width=device-width,height=device-height,initial-scale=1.0"/>
-    <head>
-        <title>portfolio</title>
-        <link rel="stylesheet" href="sheet.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="Logo" class="logo">
+    </header>
 
-    </head>
+    <section class="intro" id="home">
+        <h1 class="section__title section__title--intro">
+            <strong>Yon Luu Nguyen</strong>
+        </h1>
+        <p class="section__subtitle section__subtitle--intro">
+            <strong>front/ back-end dev</strong>
+        </p>
+        
+        <div class="blob-wrapper">
+            <img src="OMORI.gif" alt="Profile" class="intro__img">
+        </div>
+    </section>
 
-    <body>
-        <header>
-            <img src="logo.png" alt="" class="logo">
-        </header>
-
-        <!-- Introduction -->
-        <section class="intro" id="home">
-            <h1 class="section__title section__title--intro">
-                    <strong>Yon Luu Nguyen</strong>
-            </h1>
-            <p class="section__subtitle section__subtitle--intro">
-                <strong>front/ back-end dev</strong>
-            </p>
-            <img src="OMORI.gif" alt="OMORIIII" class = "intro__img" >
-
-
-
-        </section>
-
-        <!-- Showcase-->
-        <section class="global-showcase" id="showcase">
-            <div class="container">
-                <div class="category" id="c">
-                    <div class="categories" id="unselected">Games</div>
-                    <div class="categories" id="unselected">ArtWork</div>
-                    <div class="categories" id="unselected">Info</div>
-                </div>
-
-                <div class="content">
-                    <div class="pad"><div class="scroll" id="s"></div></div>
-                    <div class="checkbox" id="cb"></div>
-                    <div class="items" id ="i"></div>
-
-                </div>
+    <section class="global-showcase" id="showcase">
+        
+        <div class="container">
+            <div class="container-inner">
+                <div class="category" id="category-tabs"></div>
+                <div class="content" id="list-container"></div>
             </div>
-            <img src="scroll-box.gif" class="whitespace">
+        </div>
 
-            <img src="Arrow_Connector.png" alt="connects border" class = "showcase_arrow">
-            <div class="showcase_border" id="ani">
-
+        <img src="Arrow_Connector.png" alt="" class="showcase_arrow">
+        
+        <div class="showcase_border" id="showcase-window">
+            <div class="showcase-inner">
                 <section class="information">
-                    <div class="information--games" id="0" >
-                        <iframe src=""  allowTransparency="false" scrolling="no" frameborder="0" ></iframe>
-
-                    </div>
-
-                    <div class="information--art" id="1">
-                        <iframe src=""  allowTransparency="false" scrolling="no" frameborder="0" ></iframe>
-
-                    </div>
-
-
-                    <div class="information--info" id="2">
-                        <iframe src=""  allowTransparency="false" scrolling="no" frameborder="0" ></iframe>
-                    </div>
-
-
+                    <iframe id="main-frame" src="" title="Project View"></iframe>
                 </section>
-
             </div>
+        </div>
+    </section>
 
-        </section>
-
-
-        <!-- Services -->
-
-        <script src="script.js"></script>
-    </body>
-
+    <script src="script.js"></script>
+</body>
 </html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>3D Physics Demo</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #1a1a1a; font-family: monospace; }
+        canvas { display: block; }
+        #instructions {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            pointer-events: none;
+            text-shadow: 1px 1px 0 #000;
+            z-index: 10;
+        }
+    </style>
+    
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+                "cannon-es": "https://unpkg.com/cannon-es@0.20.0/dist/cannon-es.js"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="instructions">
+        CLICK to Shoot Ball<br>
+        [Rigid Body Physics + Stack Simulation]
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import * as CANNON from 'cannon-es';
+
+        // --- 1. SETUP WORLDS ---
+        
+        // Graphics World (Three.js)
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x202020);
+        scene.fog = new THREE.Fog(0x202020, 20, 50);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(10, 5, 10);
+        camera.lookAt(0, 2, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild(renderer.domElement);
+
+        // Physics World (Cannon.js)
+        const world = new CANNON.World();
+        world.gravity.set(0, -9.82, 0); // Standard Gravity
+        world.broadphase = new CANNON.NaiveBroadphase();
+        world.solver.iterations = 10; // Physics Quality
+
+        // Lists to keep track of objects to sync
+        const objectsToSync = [];
+
+        // --- 2. LIGHTING ---
+        const ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+        dirLight.position.set(10, 20, 10);
+        dirLight.castShadow = true;
+        dirLight.shadow.camera.top = 20;
+        dirLight.shadow.camera.bottom = -20;
+        dirLight.shadow.camera.left = -20;
+        dirLight.shadow.camera.right = 20;
+        scene.add(dirLight);
+
+        // --- 3. MATERIALS ---
+        const physMaterial = new CANNON.Material();
+        const physContactMaterial = new CANNON.ContactMaterial(physMaterial, physMaterial, {
+            friction: 0.4,
+            restitution: 0.3 // Bounciness
+        });
+        world.addContactMaterial(physContactMaterial);
+
+        // --- 4. HELPERS ---
+        
+        function createBox(x, y, z, width, height, depth, mass, color) {
+            // A. Visual Mesh
+            const geometry = new THREE.BoxGeometry(width, height, depth);
+            const material = new THREE.MeshStandardMaterial({ color: color, roughness: 0.4 });
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(x, y, z);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            scene.add(mesh);
+
+            // B. Physics Body
+            const shape = new CANNON.Box(new CANNON.Vec3(width/2, height/2, depth/2));
+            const body = new CANNON.Body({
+                mass: mass,
+                material: physMaterial
+            });
+            body.addShape(shape);
+            body.position.set(x, y, z);
+            world.addBody(body);
+
+            // C. Link for Sync
+            objectsToSync.push({ mesh, body });
+        }
+
+        function createFloor() {
+            // Visual
+            const geo = new THREE.PlaneGeometry(50, 50);
+            const mat = new THREE.MeshStandardMaterial({ color: 0x444444, roughness: 0.8 });
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.rotation.x = -Math.PI / 2;
+            mesh.receiveShadow = true;
+            scene.add(mesh);
+
+            // Physics
+            const groundBody = new CANNON.Body({
+                type: CANNON.Body.STATIC, // Infinite mass
+                shape: new CANNON.Plane(),
+                material: physMaterial
+            });
+            groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+            world.addBody(groundBody);
+        }
+
+        function createBall(origin, direction) {
+            const radius = 0.4;
+            
+            // Visual
+            const geo = new THREE.SphereGeometry(radius, 32, 32);
+            const mat = new THREE.MeshStandardMaterial({ color: 0xff0055, emissive: 0x330011 });
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.castShadow = true;
+            scene.add(mesh);
+
+            // Physics
+            const shape = new CANNON.Sphere(radius);
+            const body = new CANNON.Body({
+                mass: 5,
+                material: physMaterial,
+                shape: shape
+            });
+            
+            // Set Start Position
+            body.position.copy(origin);
+            
+            // Apply Impulse (Shoot)
+            const velocityScale = 15;
+            body.velocity.set(
+                direction.x * velocityScale,
+                direction.y * velocityScale,
+                direction.z * velocityScale
+            );
+            
+            world.addBody(body);
+            objectsToSync.push({ mesh, body });
+        }
+
+        // --- 5. INITIALIZE SCENE ---
+        createFloor();
+
+        // Build a Wall
+        const boxSize = 0.8;
+        for(let i=0; i<6; i++) { // Rows
+            for(let j=0; j<5; j++) { // Cols
+                // Offset every other row for stability (brick pattern)
+                const x = (j * boxSize) - 2 + (i % 2 * boxSize / 2);
+                const y = (i * boxSize) + 0.5;
+                
+                // Color variation
+                const color = Math.random() > 0.5 ? 0x88ccff : 0xcccccc;
+                createBox(x, y, 0, boxSize, boxSize, boxSize, 1, color);
+            }
+        }
+
+        // --- 6. INPUT HANDLING ---
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        window.addEventListener('click', (event) => {
+            // 1. Calculate mouse pos in normalized device coords (-1 to +1)
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            // 2. Raycast to find shoot direction
+            raycaster.setFromCamera(mouse, camera);
+            
+            // 3. Create Start and Direction vectors
+            const shootOrigin = new THREE.Vector3().copy(camera.position);
+            // Move origin slightly forward so we don't shoot from inside our head
+            const direction = raycaster.ray.direction;
+            
+            createBall(shootOrigin, direction);
+        });
+
+        // Handle Resizing (Critical for iframe usage)
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // --- 7. ANIMATION LOOP ---
+        const timeStep = 1 / 60; // Physics Fixed Time Step
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // A. Step Physics World
+            world.step(timeStep);
+
+            // B. Sync Visuals to Physics
+            objectsToSync.forEach(obj => {
+                obj.mesh.position.copy(obj.body.position);
+                obj.mesh.quaternion.copy(obj.body.quaternion);
+            });
+
+            // C. Render
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+    </script>
+</body>
+</html>

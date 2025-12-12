@@ -1,52 +1,125 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<link rel="stylesheet" href="../../sheet.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Omori Wiggle Test</title>
 <style>
-<!--
-@font-face
-	{font-family:Consolas;
-	panose-1:2 11 6 9 2 2 4 3 2 4;}
--->
+    body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f4f4f4;
+        font-family: 'Courier New', monospace;
+        gap: 50px;
+    }
+
+    /* =========================================
+       STYLE 1: THE ORGANIC BLOB (Profile Pic)
+    ========================================= */
+    .omori-blob {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        z-index: 1;
+        
+        /* The Base Shape */
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    }
+
+    /* The Sketch Lines */
+    .omori-blob::before,
+    .omori-blob::after {
+        content: '';
+        position: absolute;
+        inset: -3px; /* Extends outside the container */
+        border: 3px solid #000;
+        background: transparent;
+        z-index: -1;
+        
+        /* The Animation */
+        animation: blob-wiggle 3s linear infinite;
+    }
+
+    /* Layer 2 (The messy overlap) */
+    .omori-blob::after {
+        inset: -6px;
+        border-color: rgba(0, 0, 0, 0.6);
+        animation-duration: 2s; /* Different speed = chaos */
+        animation-direction: reverse;
+    }
+
+    @keyframes blob-wiggle {
+        0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: rotate(0deg); }
+        25% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: rotate(2deg); }
+        50% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; transform: rotate(0deg); }
+        75% { border-radius: 50% 50% 20% 80% / 25% 80% 20% 75%; transform: rotate(-2deg); }
+        100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: rotate(0deg); }
+    }
+
+    /* =========================================
+       STYLE 2: THE SKETCHY BOX (UI Window)
+    ========================================= */
+    .omori-box {
+        position: relative;
+        width: 300px;
+        height: 200px;
+        background: white;
+        padding: 20px;
+        z-index: 1;
+        
+        /* Hand-drawn rectangle shape */
+        border-radius: 2px 5px 3px 255px / 255px 3px 5px 2px;
+    }
+
+    .omori-box::before,
+    .omori-box::after {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border: 2px solid #000;
+        z-index: -1;
+        
+        /* Use stepped animation for that jerky "stop-motion" look */
+        animation: box-jitter 0.2s steps(2) infinite;
+    }
+
+    .omori-box::before {
+        border-radius: 255px 15px 225px 15px / 15px 255px 15px 255px;
+    }
+
+    .omori-box::after {
+        inset: -4px;
+        border-color: rgba(0,0,0,0.5);
+        border-radius: 15px 225px 15px 255px / 255px 15px 255px 15px;
+        animation-duration: 0.3s;
+    }
+
+    @keyframes box-jitter {
+        0% { transform: translate(0, 0); }
+        50% { transform: translate(1px, 1px); }
+        100% { transform: translate(-1px, 0); }
+    }
+
 </style>
-
 </head>
+<body>
 
-  <body style='background:#2e2c28'>
+    <div class="omori-blob">
+        PROFILE
+    </div>
 
-    <div style='width=520;height=520;' class="emb">
-
-		<table style='margin:auto;'>
-			<tr>
-				<td style='text-align:center'>
-
-			    <img width=100%  height=100% src="Doctor Gear_files/Title.png" style="margin:auto;">
-
-					<p style='margin-top:0.5em;margin-bottom:1.5em;
-			    font-size:12.5pt;color:#FFFFFF'><u>
-					<a style='color:#FFFFFF' href="https://i.gyazo.com/61f7a467af0619eff9d189949dd62a10.mp4">Showcase</a>
-					</u></p>
-
-					<p style='margin-top:0em;margin-bottom:1.5em;
-					font-size:12.5pt;color:#FFFFFF'><u>
-					<a style='color:#FFFFFF' href="https://globalgamejam.org/2020/games/doctor-gear-2">WEBSITE</a>
-					</u></p>
-
-					<p style='margin-top:0em;margin-bottom:1.5em;width:100%;
-					font-size:12.5pt;color:#FFFFFF'>
-					You play as the infamous surgeon, Dr Gear. He takes 'orders' from patients with dysfunctional body parts and repairs them. He has to decide who to operate on and then carry out the procedure. the procedure consists of crafting new parts with gears, oils and screws in the right combination. In the meantime, he has to maintain customer satisfaction and pain level of his patient. At the end of each day, Doctor Gear gets scored based on the mean value of customer satisfaction.
-					</p>
-
-					<p style='margin-top:0em;margin-bottom:0em;
-					font-size:12.5pt;color:#FFFFFF'>
-					Try not to screw up!
-					</p>
-				</td>
-			</tr>
-		<table>
-
+    <div class="omori-box">
+        <h3>PROJECT INFO</h3>
+        <p>This box uses a stepped jitter animation to look like it's vibrating.</p>
     </div>
 
 </body>
-
 </html>

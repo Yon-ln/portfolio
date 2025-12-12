@@ -1,50 +1,124 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en-us">
 <head>
-<link rel="stylesheet" href="../../sheet.css">
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dungeon Crawler</title>
+    
+    <script src="Build/UnityLoader.js"></script>
+    <script>
+      // Load the game immediately
+      UnityLoader.instantiate("unityContainer", "Build/d.json");
+    </script>
 
+    <style>
+        :root {
+            --ff-primary: "Nitw", "Arial", sans-serif;
+            --clr-light: #ffffff;
+            --clr-dark: #303030;
+            --clr-accent: rgb(152, 151, 232);
+        }
+
+        @font-face {
+            font-family: "Nitw";
+            /* Adjust path to go up 2 folders to root */
+            src: url('../../Nitw.otf'); 
+            font-display: swap; 
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: var(--ff-primary);
+            background: var(--clr-light);
+            color: var(--clr-dark);
+            margin: 0;
+            padding: 1rem; /* Slightly smaller padding for space */
+            line-height: 1.5;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* HEADER */
+        header {
+            border-bottom: 2px solid var(--clr-dark);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 { font-size: 1.5rem; margin: 0; }
+
+        .tags { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+        .tag {
+            font-size: 0.7rem;
+            background: var(--clr-dark);
+            color: var(--clr-light);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        /* UNITY CONTAINER WRAPPER */
+        #game-wrapper {
+            width: 100%;
+            height: 300px; /* Fixed height to fit in window */
+            background: #000;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--clr-dark);
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+        }
+
+        #unityContainer {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* DESCRIPTION */
+        .description { font-size: 0.9rem; }
+        
+        /* FULLSCREEN BUTTON (Optional helper) */
+        .fullscreen-btn {
+            display: inline-block;
+            margin-top: 5px;
+            padding: 5px 10px;
+            background: var(--clr-dark);
+            color: white;
+            text-decoration: none;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+    </style>
 </head>
-  <body style='background:#597d35'>
+<body>
 
-    <div style='width=520;height=520;' class="emb">
+    <header>
+        <h1>Dungeon Crawler</h1>
+        <div class="tags">
+            <span class="tag">Unity</span>
+            <span class="tag">C#</span>
+            <span class="tag">WebGL</span>
+        </div>
+    </header>
 
-		<table style='background:#597d35;margin:auto;'>
-			<tr>
-				<td style='text-align:center'>
-					<p style=';margin-bottom:1em;
-			    '><span style='font-size:30.0pt;text-shadow: -3px 3px #000000;
-			    color:#FDE2CC'>The Last Hope</span></p>
-
-			    <img width=100 height=100 src="The Last Hope_files\player.png" style="margin:auto;">
-
-					<p style='margin-top:0.5em;margin-bottom:1.5em;
-			    font-size:12.5pt;'><u>
-					<a style='color:#FDE2CC' href="https://i.gyazo.com/131ad2d134bf12d75a9c82544a81d93e.mp4">Showcase</a>
-					</u></p>
-
-					<p style='margin-top:0em;margin-bottom:1.5em;
-					font-size:12.5pt;'><u>
-					<a style='color:#FDE2CC' href="https://yonln.itch.io/last-hope">WEBSITE</a>
-					</u></p>
-
-					<p style='margin-top:0em;margin-bottom:1.5em;
-					font-size:12.5pt;color:#FDE2CC'>
-					With the selfish activities of humanity, the destruction of the Earth has come sooner than expected. However, our hero, a simple gardener, has one of the most important jobs, to ensure that nothing is lost. A simple, weak and vulnerable organism that can be the key to the reversion of our home is found and needs to be protected at all cost with the minimum equipment at hand. Our last hope…is you….
-					</p>
-
-					<p style='margin-top:0em;margin-bottom:0em;
-					font-size:12.5pt;color:#FDE2CC'>
-          Keep the flower alive, if it gets damaged heal it with your attack.
-          You can refill at the nearest water source.
-					</p>
-				</td>
-			</tr>
-		<table>
-
-
+    <div id="game-wrapper">
+        <div id="unityContainer"></div>
+    </div>
+    
+    <div class="description">
+        <p>
+            <strong>Controls:</strong> WASD to Move, Space to Attack.
+        </p>
+        <p>
+            A procedural dungeon crawler featuring custom physics interactions and dynamic lighting. 
+            Runs directly in the browser via WebGL.
+        </p>
+        
+        <div onclick="document.getElementById('game-wrapper').requestFullscreen()" class="fullscreen-btn">
+            [ ] Fullscreen Mode
+        </div>
     </div>
 
-
 </body>
-
 </html>

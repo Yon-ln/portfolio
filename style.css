@@ -1,0 +1,468 @@
+/* =========================================
+   1. VARIABLES & RESET
+   ========================================= */
+:root {
+    --ff-primary: "Nitw", "Arial", sans-serif;
+    --clr-light: #ffffff;
+    --clr-dark: #303030;
+    --clr-accent: rgb(152, 151, 232);
+    --fs-h1: 1.5rem;
+    --fs-body: 0.9rem;
+    --bs-hard: 0.25em 0.25em 0.75em rgba(0,0,0,.25);
+    
+    /* Animation Speed Control */
+    --anim-speed: 0.5s; 
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+@font-face {
+    font-family: "Nitw";
+    src: url('./Nitw.otf'); 
+    font-display: swap; 
+}
+
+html, body {
+    height: 100%;    
+    overflow: hidden; 
+    margin: 0;
+}
+
+body {
+    background: var(--clr-light);
+    color: var(--clr-dark);
+    font-family: var(--ff-primary);
+    font-size: var(--fs-body);
+}
+
+iframe { border: none; width: 100%; height: 100%; }
+img { display: block; max-width: 100%; }
+h1, h2, h3 { line-height: 1; margin: 0; }
+
+.logo {
+    position: absolute;
+    top: 1em; left: 1em;
+    width: 5em; z-index: 10;
+}
+
+/* =========================================
+   2. INTRO SECTION
+   ========================================= */
+.intro {
+    display: grid;
+    grid-template-areas: "image title" "image subtitle";
+    grid-template-columns: min-content 1fr;
+    gap: 0em;
+    width: min(90%, 250px);
+    
+    margin: 4em auto 2em auto; 
+    transform: translateX(0);
+    position: relative;
+    
+    transition: 
+        margin-left var(--anim-speed) cubic-bezier(0.25, 1, 0.5, 1),
+        margin-top var(--anim-speed) cubic-bezier(0.25, 1, 0.5, 1),
+        transform var(--anim-speed) cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+body.layout-active .intro {
+    margin-left: -2vw; 
+    margin-top: 3vh; 
+    transform: scale(0.8); 
+}
+
+/* --- PROFILE BLOB (Keep this random but smooth) --- */
+.blob-wrapper {
+    grid-area: image;
+    justify-self: center;
+    position: relative;
+    width: 10vh; height: 10vh;
+    min-width: 80px; min-height: 80px;
+    z-index: 2;
+}
+
+.blob-wrapper::before,
+.blob-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border: 3px solid #000;
+    z-index: -1;
+    animation: blob-chaos 4s ease-in-out infinite; 
+}
+
+.blob-wrapper::after {
+    inset: -5px;
+    border-color: rgba(0,0,0,0);
+    animation-duration: 3s; 
+    animation-direction: reverse;
+}
+
+.intro__img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    animation: blob-chaos 4s ease-in-out infinite; 
+}
+
+@keyframes blob-chaos {
+    0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: translate(0, 0) rotate(0deg); }
+    20% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translate(-2px, 1px) rotate(-2deg); }
+    40% { border-radius: 50% 50% 20% 80% / 25% 80% 20% 75%; transform: translate(2px, -1px) rotate(1deg); }
+    60% { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; transform: translate(-1px, -2px) rotate(-1deg); }
+    80% { border-radius: 30% 70% 70% 30% / 50% 20% 80% 50%; transform: translate(1px, 2px) rotate(2deg); }
+    100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: translate(0, 0) rotate(0deg); }
+}
+
+.section__title--intro {
+    grid-area: title;
+    align-self: end;
+    font-size: var(--fs-h1);
+    z-index: 3; 
+}
+
+.section__subtitle--intro {
+    grid-area: subtitle;
+    align-self: start;
+    background: var(--clr-accent);
+    color: var(--clr-light);
+    padding: 0.5em 1em;
+    border-radius: 1em;
+    font-weight: 900;
+    padding-left: 6em;
+    margin-left: -5em; 
+    z-index: 1;
+    position: relative;
+}
+
+/* =========================================
+   3. SHOWCASE SECTION (MENU & WINDOW)
+   ========================================= */
+.global-showcase {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1em;
+    position: relative;
+    padding-bottom: 0; 
+    transition: transform var(--anim-speed) ease-in-out;
+}
+
+body.layout-active .global-showcase {
+    transform: translateY(-12.5vh); 
+}
+
+/* --- THE MENU BOX (OUTER SHELL) --- */
+.container {
+    height: 20vh;
+    width: 30vh;
+    aspect-ratio: 7 / 4;
+    position: relative;
+    z-index: 5;
+    
+    /* Static Shape (No animation here!) */
+    border-radius: 2px 255px 3px 25px / 255px 5px 3px 255px;
+    
+    overflow: visible; 
+    box-shadow: var(--bs-hard);
+}
+
+/* Wiggle Lines ONLY (Pseudo-elements move, parent stays still) */
+.container::before,
+.container::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border: 2px solid #000;
+    z-index: -1;
+    pointer-events: none;
+    
+    /* Slightly different shape */
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    
+    /* THE ANIMATION IS HERE NOW */
+    animation: box-squirm 0.3s steps(2) infinite alternate;
+}
+.container::after {
+    inset: -3px;
+    border-color: rgba(48, 48, 48, 0.3);
+    animation-duration: 0.4s; 
+    animation-direction: reverse;
+    border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;
+}
+
+/* --- THE MENU INNER (CONTENT HOLDER) --- */
+.container-inner {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0);
+    /* Clean radius for content masking */
+    border-radius: 4px; 
+    
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+/* Tabs & List Styles */
+.category {
+    display: flex;
+    justify-content: center;
+    overflow: hidden; 
+    margin-bottom: 5px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+    flex-shrink: 0;
+    position: relative;
+    width: 100%;
+}
+
+.category-track {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transform: translateX(0);
+}
+
+.categories {
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0 5px;
+    white-space: nowrap;
+    user-select: none;
+    transition: opacity 0.3s, color 0.3s, transform 0.3s;
+}
+
+.content {
+    flex-grow: 1; 
+    min-height: 0; 
+    overflow-y: auto; 
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-right: 0;
+    scroll-behavior: auto; 
+    position: relative;
+    scrollbar-gutter: stable;
+}
+
+.list-header {
+    text-align: center;
+    font-weight: bold;
+    color: var(--clr-accent);
+    padding: 15px 0 5px 0;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    pointer-events: none; 
+}
+
+.menu-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 5px 10px; 
+    flex-shrink: 0; 
+    transition: background 0.2s;
+}
+.menu-row:hover { background: rgba(0,0,0,0.05); }
+
+/* =========================================
+   OMORI STYLE CHECKBOXES
+   ========================================= */
+
+.checkbox-icon {
+    width: 20px; 
+    height: 20px; 
+    min-width: 20px; /* Prevent squishing */
+    
+    /* Sketchy Border Logic */
+    border: 2px solid var(--clr-dark);
+    background: transparent;
+    position: relative;
+    
+    /* Hand-drawn shape */
+    border-radius: 2px 5px 3px 25px / 25px 3px 5px 2px;
+    
+    /* Reusing your existing wiggle animation */
+    animation: box-squirm 0.3s steps(2) infinite alternate;
+}
+
+/* The "Checked" State (Inner Scribble) */
+.checkbox-icon.checked::after {
+    content: '';
+    position: absolute;
+    
+    /* Make the fill slightly smaller than the box */
+    inset: 1px; 
+    background: var(--clr-dark);
+    
+    /* Make the inner fill look like a random blob */
+    border-radius: 80% 60% 70% 30% / 40% 50% 60% 50%;
+    
+    /* Use the chaos animation so it looks like a scribbled fill */
+    animation: blob-chaos 20.0s linear infinite;
+}
+
+/* Remove old image styles */
+#box, #box-s { display: none; }
+
+.hoverable {
+    font-size: 0.95rem;
+    border: none;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+
+.empty-msg { padding: 15px; text-align: center; opacity: 0.4; font-size: 0.85rem; font-style: italic; }
+
+.content::-webkit-scrollbar { width: 8px; }
+.content::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 4px; }
+.content::-webkit-scrollbar-thumb { background: var(--clr-dark); border-radius: 4px; border: 2px solid white; }
+
+/* =========================================
+   4. DECORATION & SLIDING WINDOW
+   ========================================= */
+.whitespace {
+    position: absolute; top: -50px;
+    z-index: 1; opacity: 0.5; pointer-events: none;
+}
+
+.showcase_arrow {
+    margin-top: 5px;
+    z-index: 4;
+    position: relative;
+    width: 20px;
+    transition: transform var(--anim-speed) ease-in-out;
+}
+body.layout-active .showcase_arrow { transform: rotate(180deg); }
+
+/* --- THE SLIDING MONITOR (OUTER SHELL) --- */
+.showcase_border {
+    position: absolute;
+    top: 220px;
+    width: 500px;
+    height: 500px;
+    
+    /* Static Shape */
+    border-radius: 2px 255px 3px 25px / 255px 5px 3px 255px;
+    
+    /* Sliding Animation Only (No Wiggle!) */
+    transform: translateY(-80%);
+    opacity: 0;
+    transition: transform var(--anim-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+    
+    overflow: visible; 
+    z-index: 2;
+    box-shadow: var(--bs-hard);
+}
+
+/* Wiggle Lines for Monitor */
+.showcase_border::before,
+.showcase_border::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border: 2px solid #303030;
+    z-index: 10; 
+    pointer-events: none;
+    border-radius: 255px 15px 225px 15px / 15px 255px 15px 255px;
+    
+    /* THE ANIMATION IS HERE NOW */
+    animation: box-squirm 0.3s steps(2) infinite reverse;
+}
+.showcase_border::after {
+    inset: -3px;
+    border-color: rgba(48, 48, 48, 0.5);
+    border-radius: 15px 225px 15px 255px / 255px 15px 255px 15px;
+    animation-duration: 0.4s;
+    animation-direction: alternate;
+}
+
+/* --- THE MONITOR INNER (CONTENT HOLDER) --- */
+.showcase-inner {
+    width: 100%;
+    height: 100%;
+    background: var(--clr-light);
+    border-radius: 4px; /* Clean internal radius */
+    overflow: hidden; 
+    position: relative;
+}
+
+.information { width: 100%; height: 100%; padding: 10px; }
+
+.showcase_border-switched {
+    transform: translateY(0%);
+    opacity: 1;
+}
+
+.retract-animation {
+    transform: translateY(-80%);
+    opacity: 0;
+}
+
+/* --- ANIMATION KEYFRAMES --- */
+
+/* BOX SQUIRM: Subtle vibration only. No shape morphing. */
+@keyframes box-squirm {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(0.5px, 0.5px) rotate(0.1deg); }
+    50% { transform: translate(-0.5px, 0px) rotate(-0.1deg); }
+    75% { transform: translate(-0.5px, -0.5px) rotate(0deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* =========================================
+   ERROR / WIP EFFECTS
+   ========================================= */
+
+.text-error .hoverable {
+    color: red !important;
+    font-weight: 900;
+    text-shadow: 2px 0px 0px rgba(255,0,0,0.5); 
+    transition: color 0.1s;
+}
+
+.shake-aggressive, 
+.shake-aggressive::before, 
+.shake-aggressive::after {
+    animation: omori-stress 0.5s linear !important;
+    border-color: red !important; 
+}
+
+@keyframes omori-stress {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    10% { transform: translate(-5px, -5px) rotate(-2deg); }
+    20% { transform: translate(5px, 5px) rotate(2deg); }
+    30% { transform: translate(-5px, 5px) rotate(-2deg); }
+    40% { transform: translate(5px, -5px) rotate(2deg); }
+    50% { transform: translate(-5px, 0) rotate(-1deg); }
+    60% { transform: translate(5px, 0) rotate(1deg); }
+    70% { transform: translate(0, 5px) rotate(0deg); }
+    80% { transform: translate(0, -5px) rotate(0deg); }
+    90% { transform: translate(2px, -2px) rotate(1deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* Mobile Response */
+@media (max-width: 600px) {
+    .intro {
+        grid-template-areas: "image" "title" "subtitle";
+        grid-template-columns: 1fr;
+        justify-items: center; text-align: center;
+        width: 90%;
+    }
+    .section__subtitle--intro { margin-left: 0; padding-left: 1em; }
+    
+    body.layout-active .intro {
+        margin-left: auto; margin-right: auto;
+        transform: scale(0.8) translateY(-20px);
+    }
+    
+    .showcase_border { width: 95%; height: 400px; }
+}
